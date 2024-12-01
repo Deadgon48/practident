@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Citas - PracticDent</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --primary-dark: #2980b9;
+            --error-color: #e74c3c;
+            --success-color: #2ecc71;
+            --background-color: #f5f5f5;
+            --text-color: #2c3e50;
+            --border-color: #ddd;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--background-color);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Header y Logo */
+        .header {
+            text-align: center;
+            padding-bottom: 30px;
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: bold;
+            margin: 0 auto 15px;
+        }
+
+        .brand {
+            font-size: 24px;
+            color: var(--primary-color);
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .page-title {
+            font-size: 28px;
+            color: var(--text-color);
+            margin: 15px 0;
+        }
+
+        /* Nueva Cita Card */
+        .new-appointment-card {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 30px 0;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .new-appointment-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .new-appointment-card i {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+
+        .new-appointment-card h2 {
+            margin: 10px 0;
+            font-size: 24px;
+        }
+
+        .new-appointment-card p {
+            margin: 0;
+            opacity: 0.9;
+        }
+
+        /* Summary Cards */
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .summary-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease;
+        }
+
+        .summary-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .summary-card h3 {
+            margin: 0 0 15px 0;
+            color: var(--text-color);
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .summary-card .value {
+            font-size: 32px;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        /* Filters */
+        .filters-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 30px 0;
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-color);
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .filter-select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            font-size: 14px;
+            background-color: white;
+            transition: border-color 0.3s ease;
+        }
+
+        .filter-select:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+
+        /* Table */
+        .table-container {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            margin: 30px 0;
+        }
+
+        .appointments-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .appointments-table th {
+            background-color: #f8f9fa;
+            padding: 15px;
+            text-align: left;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-color);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .appointments-table td {
+            padding: 15px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .appointments-table tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        /* Status Badges */
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-pendiente {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .status-completada {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status-cancelada {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 8px 16px;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .btn-danger {
+            background-color: var(--error-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+
+        /* Back Button */
+        .back-button-container {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .back-button {
+            background-color: #95a5a6;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 5px;
+            border: none;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-button:hover {
+            background-color: #7f8c8d;
+            transform: translateY(-1px);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--text-color);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .modal-close:hover {
+            color: var(--error-color);
+        }
+
+        /* Form Styles */
+        .form-step {
+            display: none;
+        }
+
+        .form-step.active {
+            display: block;
+        }
+
+        .step-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .step-number {
+            width: 24px;
+            height: 24px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-color);
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+
+        /* Rating Stars */
+        .rating-stars {
+            display: flex;
+            gap: 5px;
+            font-size: 24px;
+            color: #f1c40f;
+            cursor: pointer;
+        }
+
+        .rating-stars i {
+            transition: transform 0.2s ease;
+        }
+
+        .rating-stars i:hover {
+            transform: scale(1.2);
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .summary-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .table-container {
+                overflow-x: auto;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 10px;
+            }
+        }
+
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 4px;
+            color: white;
+            z-index: 1000;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .notification.success {
+            background-color: var(--success-color);
+        }
+
+        .notification.error {
+            background-color: var(--error-color);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        .form-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+}
+
+textarea.form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    font-size: 14px;
+    resize: vertical;
+    min-height: 100px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+textarea.form-control:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">PD</div>
+            <div class="brand">PracticDent</div>
+            <h1 class="page-title">Mis Citas</h1>
+        </div>
+
+        <!-- Nueva Cita Card -->
+        <div class="new-appointment-card" onclick="openNewAppointmentModal()">
+            <i class="fas fa-calendar-plus"></i>
+            <h2>Agendar Nueva Cita</h2>
+            <p>Selecciona una práctica disponible y agenda tu cita con un practicante</p>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="summary-cards">
+            <div class="summary-card">
+                <h3><i class="fas fa-calendar"></i> Próxima Cita</h3>
+                <div class="value" id="proximaCita">-</div>
+            </div>
+            <div class="summary-card">
+                <h3><i class="fas fa-check-circle"></i> Citas Completadas</h3>
+                <div class="value" id="citasCompletadas">0</div>
+            </div>
+            <div class="summary-card">
+                <h3><i class="fas fa-clock"></i> Citas Pendientes</h3>
+                <div class="value" id="citasPendientes">0</div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-section">
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label><i class="fas fa-filter"></i> Estado</label>
+                    <select class="filter-select" id="statusFilter">
+                        <option value="">Todos los estados</option>
+                        <option value="pendiente">Pendiente</option>
+                        <option value="completada">Completada</option>
+                        <option value="cancelada">Cancelada</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label><i class="fas fa-calendar-alt"></i> Fecha</label>
+                    <select class="filter-select" id="dateFilter">
+                        <option value="">Todas las fechas</option>
+                        <option value="today">Hoy</option>
+                        <option value="week">Esta semana</option>
+                        <option value="month">Este mes</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label><i class="fas fa-user-md"></i> Practicante</label>
+                    <select class="filter-select" id="practicanteFilter">
+                        <option value="">Todos los practicantes</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Appointments Table -->
+        <div class="table-container">
+            <table class="appointments-table">
+                <thead>
+                    <tr>
+                        <th>ID Cita</th>
+                        <th>Fecha y Hora</th>
+                        <th>Practicante</th>
+                        <th>Práctica</th>
+                        <th>Estado</th>
+                        <th>Calificación</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="appointmentsTableBody">
+                    <!-- Se llena dinámicamente -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Back Button -->
+        <div class="back-button-container">
+            <button class="back-button" onclick="window.location.href='/P'">
+                <i class="fas fa-arrow-left"></i>
+                Volver al Perfil
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal Nueva Cita -->
+    <div id="newAppointmentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">
+                    <i class="fas fa-calendar-plus"></i>
+                    Agendar Nueva Cita
+                </h2>
+                <button class="modal-close" onclick="closeModal('newAppointmentModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <form id="newAppointmentForm">
+                <!-- Step 1 -->
+                <div class="form-step active" id="step1">
+                    <div class="step-title">
+                        <span class="step-number">1</span>
+                        Selecciona la Práctica
+                    </div>
+                    <div class="form-group">
+                        <label>Tipo de Práctica</label>
+                        <select class="form-control" id="tipoPracticaSelect" required>
+                            <option value="">Seleccione el tipo de práctica</option>
+                        </select>
+                    </div>
+                    <div class="text-right">
+                        <button type="button" class="btn btn-primary" onclick="nextStep(2)">
+                            Siguiente <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="form-step" id="step2">
+                    <div class="step-title">
+                        <span class="step-number">2</span>
+                        Selecciona el Practicante
+                    </div>
+                    <div class="form-group">
+                        <label>Practicante</label>
+                        <select class="form-control" id="practicanteSelect" required>
+                            <option value="">Seleccione el practicante</option>
+                        </select>
+                    </div>
+                    <div class="form-buttons">
+                        <button type="button" class="btn btn-secondary" onclick="prevStep(1)">
+                            <i class="fas fa-arrow-left"></i> Anterior
+                        </button>
+                        <button type="button" class="btn btn-primary" onclick="nextStep(3)">
+                            Siguiente <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="form-step" id="step3">
+                    <div class="step-title">
+                        <span class="step-number">3</span>
+                        Selecciona Fecha y Hora
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Fecha</label>
+                            <input type="date" class="form-control" id="fechaCita" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Hora</label>
+                            <input type="time" class="form-control" id="horaCita" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Notas Adicionales</label>
+                        <textarea class="form-control" id="notasCita" rows="3"
+                            placeholder="Agregue cualquier información adicional importante"></textarea>
+                    </div>
+                    <div class="form-buttons">
+                        <button type="button" class="btn btn-secondary" onclick="prevStep(2)">
+                            <i class="fas fa-arrow-left"></i> Anterior
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-check"></i> Confirmar Cita
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Detalles -->
+    <div id="detailsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">
+                    <i class="fas fa-info-circle"></i>
+                    Detalles de la Cita
+                </h2>
+                <button class="modal-close" onclick="closeModal('detailsModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="appointmentDetails">
+                <!-- Se llena dinámicamente -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Calificación -->
+    <div id="ratingModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">
+                    <i class="fas fa-star"></i>
+                    Calificar Cita
+                </h2>
+                <button class="modal-close" onclick="closeModal('ratingModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="ratingForm">
+                <div class="form-group">
+                    <label>Calificación</label>
+                    <div class="rating-stars" id="ratingStars">
+                        <i class="far fa-star" data-rating="1"></i>
+                        <i class="far fa-star" data-rating="2"></i>
+                        <i class="far fa-star" data-rating="3"></i>
+                        <i class="far fa-star" data-rating="4"></i>
+                        <i class="far fa-star" data-rating="5"></i>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Comentarios</label>
+                    <textarea class="form-control" id="ratingComments" rows="3"
+                        placeholder="Comparta su experiencia con el practicante"></textarea>
+                </div>
+                <div class="form-buttons">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-paper-plane"></i> Enviar Calificación
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+ <!-- Modal de Cancelación -->
+<div id="cancelacionModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title">
+                <i class="fas fa-times-circle"></i>
+                Cancelar Cita
+            </h2>
+            <button type="button" class="modal-close" onclick="closeCancelModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <form id="cancelacionForm" onsubmit="handleCancelacion(event)">
+            <div class="form-group">
+                <label for="motivoCancelacion">Motivo de la cancelación:</label>
+                <textarea 
+                    id="motivoCancelacion" 
+                    class="form-control" 
+                    rows="4" 
+                    required
+                    placeholder="Por favor, explique el motivo de la cancelación..."
+                ></textarea>
+            </div>
+            <div class="form-buttons">
+                <button type="button" class="btn btn-secondary" onclick="closeCancelModal()">
+                    <i class="fas fa-times"></i> Cancelar
+                </button>
+                <button type="submit" class="btn btn-danger">
+                    <i class="fas fa-check"></i> Confirmar Cancelación
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+    <script>
+// Variables globales
+let currentUser = null;
+let currentCitas = [];
+let currentStep = 1;
+let selectedRating = 0;
+let citaIdACancelar = null;
+
+// Inicialización del sistema
+document.addEventListener('DOMContentLoaded', async function() {
+    try {
+        console.log('Iniciando aplicación de citas');
+        const userData = sessionStorage.getItem('userData');
+        if (!userData) {
+            window.location.href = '/';
+            return;
+        }
+
+        currentUser = JSON.parse(userData);
+        console.log('Usuario actual:', currentUser);
+
+        if (currentUser.rol_id !== 3) {
+            showNotification('Acceso no autorizado. Esta página es solo para pacientes.', 'error');
+            setTimeout(() => window.location.href = '/P', 3000);
+            return;
+        }
+
+        // Inicializar componentes
+        await Promise.all([
+            loadAppointments(),
+            setupEventListeners()
+        ]);
+
+    } catch (error) {
+        console.error('Error en la inicialización:', error);
+        showNotification('Error al cargar los datos', 'error');
+    }
+});
+
+// Funciones de carga de datos
+async function loadPracticasDisponibles() {
+    const select = document.getElementById('tipoPracticaSelect');
+    try {
+        console.log('Iniciando carga de prácticas disponibles...');
+        select.innerHTML = '<option value="">Cargando prácticas...</option>';
+        select.disabled = true;
+
+        // Verificar si el usuario está autenticado
+        const userData = JSON.parse(sessionStorage.getItem('userData'));
+        console.log('Usuario actual:', userData);
+
+        const response = await fetch('/api/practicas/disponibles');
+        console.log('Respuesta del servidor:', response.status);
+
+        if (!response.ok) {
+            throw new Error(`Error en la respuesta: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('Datos recibidos:', data);
+
+        if (!data.success) {
+            throw new Error(data.error || 'Error al obtener prácticas');
+        }
+
+        select.innerHTML = '<option value="">Seleccione la práctica</option>';
+        
+        if (Array.isArray(data.practicas) && data.practicas.length > 0) {
+            data.practicas.forEach(practica => {
+                console.log('Agregando práctica:', practica);
+                const fechaLimite = new Date(practica.fecha_limite).toLocaleDateString();
+                select.innerHTML += `
+                    <option value="${practica.id}">
+                        ${practica.materia_nombre} - ${practica.tipo_nombre} 
+                        (Grupo: ${practica.grupo_nombre}) - Límite: ${fechaLimite}
+                    </option>
+                `;
+            });
+            console.log('Prácticas cargadas:', data.practicas.length);
+        } else {
+            select.innerHTML = '<option value="">No hay prácticas disponibles</option>';
+            console.log('No se encontraron prácticas disponibles');
+        }
+    } catch (error) {
+        console.error('Error al cargar prácticas:', error);
+        select.innerHTML = '<option value="">Error al cargar prácticas</option>';
+        showNotification('Error al cargar prácticas disponibles: ' + error.message, 'error');
+    } finally {
+        select.disabled = false;
+    }
+}
+
+async function loadPracticantes(practicaId) {
+    const select = document.getElementById('practicanteSelect');
+    try {
+        console.log('Cargando practicantes para práctica ID:', practicaId);
+        select.innerHTML = '<option value="">Cargando practicantes...</option>';
+        select.disabled = true;
+
+        const response = await fetch(`/api/practicas/${practicaId}/practicantes`);
+        console.log('Respuesta del servidor:', response.status);
+
+        if (!response.ok) {
+            throw new Error(`Error en la respuesta: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('Datos de practicantes recibidos:', data);
+
+        select.innerHTML = '<option value="">Seleccione el practicante</option>';
+
+        if (data.success && Array.isArray(data.practicantes) && data.practicantes.length > 0) {
+            data.practicantes.forEach(practicante => {
+                console.log('Agregando practicante:', practicante);
+                select.innerHTML += `
+                    <option value="${practicante.id}">
+                        ${practicante.nombre} ${practicante.apellido}
+                        (Matrícula: ${practicante.matricula})
+                    </option>
+                `;
+            });
+            console.log(`${data.practicantes.length} practicantes cargados`);
+        } else {
+            select.innerHTML = '<option value="">No hay practicantes disponibles</option>';
+            console.log('No se encontraron practicantes disponibles');
+        }
+    } catch (error) {
+        console.error('Error al cargar practicantes:', error);
+        select.innerHTML = '<option value="">Error al cargar practicantes</option>';
+        showNotification('Error al cargar practicantes: ' + error.message, 'error');
+    } finally {
+        select.disabled = false;
+    }
+}
+
+async function loadAppointments() {
+    try {
+        console.log('Cargando citas para usuario:', currentUser.id);
+        const response = await fetch(`/api/citas/paciente/${currentUser.id}`);
+        
+        if (!response.ok) {
+            throw new Error(`Error HTTP: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('Datos de citas recibidos:', data);
+
+        if (data.success) {
+            currentCitas = data.citas || [];
+            updateAppointmentsTable();
+            updateSummaryCards(data.resumen);
+        } else {
+            throw new Error(data.error || 'Error al cargar las citas');
+        }
+    } catch (error) {
+        console.error('Error al cargar citas:', error);
+        showNotification('Error al cargar las citas', 'error');
+    }
+}
+
+// Gestión del formulario y eventos
+function setupEventListeners() {
+    const newAppointmentForm = document.getElementById('newAppointmentForm');
+    if (newAppointmentForm) {
+        newAppointmentForm.addEventListener('submit', handleNewAppointment);
+    }
+
+    const tipoPracticaSelect = document.getElementById('tipoPracticaSelect');
+    if (tipoPracticaSelect) {
+        tipoPracticaSelect.addEventListener('change', function() {
+            if (this.value) {
+                loadPracticantes(this.value);
+                sessionStorage.setItem('selectedPracticaId', this.value);
+            } else {
+                const practicanteSelect = document.getElementById('practicanteSelect');
+                practicanteSelect.innerHTML = '<option value="">Seleccione una práctica primero</option>';
+            }
+        });
+    }
+
+    const practicanteSelect = document.getElementById('practicanteSelect');
+    if (practicanteSelect) {
+        practicanteSelect.addEventListener('change', function() {
+            if (this.value) {
+                sessionStorage.setItem('selectedPracticanteId', this.value);
+            }
+        });
+    }
+
+    configurarFechasCita();
+}
+
+async function handleNewAppointment(event) {
+    event.preventDefault();
+    const submitButton = event.target.querySelector('button[type="submit"]');
+    submitButton.disabled = true;
+    
+    try {
+        const practicaId = sessionStorage.getItem('selectedPracticaId');
+        const practicanteId = sessionStorage.getItem('selectedPracticanteId');
+        const fecha = document.getElementById('fechaCita').value;
+        const hora = document.getElementById('horaCita').value;
+        const notas = document.getElementById('notasCita').value;
+
+        if (!practicaId || !practicanteId || !fecha || !hora) {
+            throw new Error('Por favor complete todos los campos requeridos');
+        }
+
+        const citaData = {
+            practica_id: practicaId,
+            practicante_id: practicanteId,
+            usuario_id: currentUser.id,
+            fecha_hora: `${fecha}T${hora}`,
+            notas: notas || ''
+        };
+
+        console.log('Enviando datos de cita:', citaData);
+
+        const response = await fetch('/api/citas/crear', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(citaData)
+        });
+
+        const data = await response.json();
+        console.log('Respuesta del servidor:', data);
+
+        if (data.success) {
+            showNotification('Cita agendada exitosamente', 'success');
+            closeModal('newAppointmentModal');
+            await loadAppointments();
+            resetForm();
+        } else {
+            throw new Error(data.error || 'Error al crear la cita');
+        }
+    } catch (error) {
+        console.error('Error al crear cita:', error);
+        showNotification(error.message, 'error');
+    } finally {
+        submitButton.disabled = false;
+    }
+}
+
+// Navegación del formulario por pasos
+function nextStep(step) {
+    if (!validateStep(currentStep)) {
+        return;
+    }
+
+    document.getElementById(`step${currentStep}`).style.display = 'none';
+    document.getElementById(`step${step}`).style.display = 'block';
+    currentStep = step;
+}
+
+function prevStep(step) {
+    document.getElementById(`step${currentStep}`).style.display = 'none';
+    document.getElementById(`step${step}`).style.display = 'block';
+    currentStep = step;
+}
+
+function validateStep(step) {
+    switch(step) {
+        case 1:
+            const practicaId = document.getElementById('tipoPracticaSelect').value;
+            if (!practicaId) {
+                showNotification('Por favor seleccione una práctica', 'error');
+                return false;
+            }
+            break;
+        case 2:
+            const practicanteId = document.getElementById('practicanteSelect').value;
+            if (!practicanteId) {
+                showNotification('Por favor seleccione un practicante', 'error');
+                return false;
+            }
+            break;
+    }
+    return true;
+}
+
+// Gestión de modales
+function openNewAppointmentModal() {
+    document.getElementById('newAppointmentModal').style.display = 'flex';
+    resetForm();
+    loadPracticasDisponibles();
+}
+
+function closeModal(modalId) {
+    document.getElementById(modalId).style.display = 'none';
+    resetForm();
+}
+
+function resetForm() {
+    document.getElementById('newAppointmentForm').reset();
+    sessionStorage.removeItem('selectedPracticaId');
+    sessionStorage.removeItem('selectedPracticanteId');
+    currentStep = 1;
+    document.querySelectorAll('.form-step').forEach(step => {
+        step.style.display = 'none';
+    });
+    document.getElementById('step1').style.display = 'block';
+}
+
+// Acciones de citas
+async function cancelarCita(citaId) {
+    try {
+        const motivo = prompt('Por favor, ingrese el motivo de la cancelación:');
+        if (!motivo) return;
+
+        const response = await fetch(`/api/citas/${citaId}/cancelar`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ motivo })
+        });
+
+        const data = await response.json();
+        
+        if (data.success) {
+            showNotification('Cita cancelada exitosamente', 'success');
+            await loadAppointments();
+        } else {
+            throw new Error(data.error || 'Error al cancelar la cita');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        showNotification('Error al cancelar la cita: ' + error.message, 'error');
+    }
+}
+
+async function calificarCita(citaId) {
+    try {
+        const calificacion = prompt('Califique del 1 al 5:', '5');
+        if (!calificacion) return;
+
+        const comentario = prompt('Añada un comentario (opcional):');
+
+        const response = await fetch(`/api/citas/${citaId}/calificar`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                calificacion: parseInt(calificacion),
+                comentario
+            })
+        });
+
+        const data = await response.json();
+        
+        if (data.success) {
+            showNotification('Cita calificada exitosamente', 'success');
+            await loadAppointments();
+        } else {
+            throw new Error(data.error || 'Error al calificar la cita');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        showNotification('Error al calificar la cita: ' + error.message, 'error');
+    }
+}
+
+// Funciones de utilidad
+function configurarFechasCita() {
+    const fechaCita = document.getElementById('fechaCita');
+    const horaCita = document.getElementById('horaCita');
+    
+    if (fechaCita) {
+        const today = new Date().toISOString().split('T')[0];
+        fechaCita.min = today;
+        
+        const maxDate = new Date();
+        maxDate.setMonth(maxDate.getMonth() + 3);
+        fechaCita.max = maxDate.toISOString().split('T')[0];
+    }
+
+    if (horaCita) {
+        horaCita.min = "09:00";
+        horaCita.max = "18:00";
+    }
+}
+
+function showNotification(message, type = 'success') {
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.textContent = message;
+    document.body.appendChild(notification);
+
+    setTimeout(() => notification.remove(), 5000);
+}
+
+// Funciones de actualización de UI
+function updateAppointmentsTable() {
+    const tbody = document.getElementById('appointmentsTableBody');
+    if (!currentCitas.length) {
+        tbody.innerHTML = '<tr><td colspan="7" class="text-center">No hay citas registradas</td></tr>';
+        return;
+    }
+
+    tbody.innerHTML = currentCitas.map(formatAppointmentRow).join('');
+}
+
+function formatAppointmentRow(cita) {
+    return `
+        <tr>
+            <td>${cita.codigo || '-'}</td>
+            <td>${formatDateTime(cita.fecha_hora)}</td>
+            <td>${cita.practicante_nombre}</td>
+            <td>${cita.tipo_practica}</td>
+            <td>
+                <span class="status-badge status-${cita.estado_nombre.toLowerCase()}">
+                    ${cita.estado_nombre}
+                </span>
+            </td>
+            <td>${renderRating(cita.calificacion)}</td>
+            <td>${getActionButtons(cita)}</td>
+        </tr>
+    `;
+}
+
+function formatDateTime(dateTime) {
+    return new Date(dateTime).toLocaleString('es-ES', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+}
+
+function renderRating(rating) {
+    if (!rating) return '-';
+    return '⭐'.repeat(rating);
+}
+
+function getActionButtons(cita) {
+    let buttons = '';
+    
+    if (cita.estado_nombre === 'Pendiente') {
+        buttons += `
+            <button onclick="cancelarCita(${cita.id})" class="btn btn-danger">
+                <i class="fas fa-times"></i> Cancelar
+            </button>
+        `;
+    }
+    
+    if (cita.estado_nombre === 'Completada' && !cita.calificacion) {
+        buttons += `
+            <button onclick="calificarCita(${cita.id})" class="btn btn-primary">
+                <i class="fas fa-star"></i> Calificar
+            </button>
+        `;
+    }
+
+    return buttons || '-';
+}
+
+function updateSummaryCards(resumen) {
+    const proximaCitaElement = document.getElementById('proximaCita');
+    if (proximaCitaElement) {
+        proximaCitaElement.textContent = resumen.proxima_cita ? 
+            new Date(resumen.proxima_cita).toLocaleDateString('es-ES') : 
+            'No hay citas próximas';
+    }
+    
+    const completadasElement = document.getElementById('citasCompletadas');
+    if (completadasElement) {
+        completadasElement.textContent = resumen.completadas || 0;
+    }
+    
+    const pendientesElement = document.getElementById('citasPendientes');
+    if (pendientesElement) {
+        pendientesElement.textContent = resumen.pendientes || 0;
+    }
+}
+
+// Eventos de ventana
+window.onclick = function(event) {
+    const modals = document.getElementsByClassName('modal');
+    Array.from(modals).forEach(modal => {
+        if (event.target === modal) {
+            closeModal(modal.id);
+        }
+    });
+};
+
+// Manejador de errores global
+window.onerror = function(message, source, lineno, colno, error) {
+    console.error('Error global:', { message, source, lineno, colno, error });
+    showNotification('Ha ocurrido un error inesperado', 'error');
+    return false;
+};
+function cancelarCita(citaId) {
+    citaIdACancelar = citaId;
+    document.getElementById('cancelacionModal').style.display = 'flex';
+    document.getElementById('motivoCancelacion').focus();
+}
+
+function closeCancelModal() {
+    document.getElementById('cancelacionModal').style.display = 'none';
+    document.getElementById('cancelacionForm').reset();
+    citaIdACancelar = null;
+}
+
+async function handleCancelacion(event) {
+    event.preventDefault();
+    
+    try {
+        const motivo = document.getElementById('motivoCancelacion').value;
+        
+        if (!motivo.trim()) {
+            showNotification('Por favor, ingrese el motivo de la cancelación', 'error');
+            return;
+        }
+
+        const response = await fetch(`/api/citas/${citaIdACancelar}/cancelar`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ motivo })
+        });
+
+        const data = await response.json();
+        
+        if (data.success) {
+            showNotification('Cita cancelada exitosamente', 'success');
+            closeCancelModal();
+            await loadAppointments();
+        } else {
+            throw new Error(data.error || 'Error al cancelar la cita');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        showNotification('Error al cancelar la cita: ' + error.message, 'error');
+    }
+}
+
+// Agregar al event listener existente
+window.onclick = function(event) {
+    const modals = document.getElementsByClassName('modal');
+    Array.from(modals).forEach(modal => {
+        if (event.target === modal) {
+            if (modal.id === 'cancelacionModal') {
+                closeCancelModal();
+            } else {
+                closeModal(modal.id);
+            }
+        }
+    });
+};
+    </script>
+</body>
+</html>

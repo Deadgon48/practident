@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            max-width: 400px;
+            width: 100%;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .brand {
+            color: #3498db;
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        .header h1 {
+            color: #2c3e50;
+            margin: 0;
+            font-size: 24px;
+            font-weight: 500;
+        }
+        .divider {
+            height: 2px;
+            background: linear-gradient(to right, #3498db, #2980b9);
+            margin: 15px 0;
+            border-radius: 2px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #34495e;
+            font-weight: 500;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        input:focus, select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        .button-group {
+            margin-top: 15px;
+        }
+        button {
+            width: 100%;
+            background-color: #3498db;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .additional-info {
+            display: none;
+            margin-top: 15px;
+        }
+        .logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #3498db;
+            border-radius: 50%;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+        }
+        .user-info {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .user-info h2 {
+            color: #2c3e50;
+            margin: 0 0 10px 0;
+        }
+        
+        .user-info p {
+            color: #7f8c8d;
+            margin: 5px 0;
+        }
+        
+        .role-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            background-color: #3498db;
+            color: white;
+            border-radius: 15px;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        
+        .menu-section {
+            margin-top: 20px;
+        }
+        
+        .menu-section h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        
+        .menu-button {
+            margin-bottom: 10px;
+        }
+        
+        button.secondary {
+            background-color: #95a5a6;
+        }
+        
+        button.danger {
+            background-color: #e74c3c;
+        }
+        
+        button.danger:hover {
+            background-color: #c0392b;
+        }
+        
+        .logout-button {
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">PD</div>
+            <div class="brand">PracticDent</div>
+            <div class="divider"></div>
+            <h1>Mi Perfil</h1>
+        </div>
+
+        <div id="userInfo" class="user-info">
+            <!-- Se llenará dinámicamente -->
+        </div>
+
+        <div id="menuOptions" class="menu-section">
+            <!-- Botones comunes -->
+            <div class="button-group menu-button">
+                <button onclick="window.location.href='/EP'" type="button">
+                    Eliminar cuenta
+                </button>
+            </div>
+            <div class="button-group menu-button">
+                <button onclick="window.location.href='/MD'" type="button">
+                    Modificar cuenta
+                </button>
+            </div>
+
+            <!-- Contenedor para opciones específicas del rol -->
+            <div id="rolSpecificOptions"></div>
+        </div>
+
+        <div class="button-group logout-button">
+            <button type="button" class="secondary" onclick="logout()">Cerrar Sesión</button>
+        </div>
+    </div>
+
+    <script>
+        // Verificar sesión al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            const userData = JSON.parse(sessionStorage.getItem('userData'));
+            if (!userData) {
+                window.location.href = '/';
+                return;
+            }
+
+            // Mostrar información del usuario
+            displayUserInfo(userData);
+
+            // Mostrar opciones específicas según el rol
+            displayRolOptions(userData.rol_id);
+        });
+
+        function displayUserInfo(userData) {
+            const userInfo = document.getElementById('userInfo');
+            userInfo.innerHTML = `
+                <h2>${userData.nombre} ${userData.apellido}</h2>
+                <p>Usuario: ${userData.usuario}</p>
+                <div class="role-badge">${userData.rol_nombre || getRolNombre(userData.rol_id)}</div>
+            `;
+        }
+
+        function getRolNombre(rolId) {
+            switch (parseInt(rolId)) {
+                case 1: return 'Maestro';
+                case 2: return 'Practicante';
+                case 3: return 'Paciente';
+                default: return 'Usuario';
+            }
+        }
+
+        function displayRolOptions(rolId) {
+            const rolSpecificOptions = document.getElementById('rolSpecificOptions');
+            let optionsHTML = '';
+
+            switch (parseInt(rolId)) {
+                case 1: // Maestro
+                    optionsHTML = `
+                        <div class="button-group menu-button">
+                            <button onclick="window.location.href='/S'" type="button">
+                                Supervisión
+                            </button>
+                        </div>
+                    `;
+                    break;
+                case 2: // Practicante
+                    optionsHTML = `
+                        <div class="button-group menu-button">
+                            <button onclick="window.location.href='/PP'" type="button">
+                                Prácticas y materias
+                            </button>
+                        </div>
+                        <div class="button-group menu-button">
+                            <button onclick="window.location.href='/CPRA'" type="button">
+                                Gestión de citas practicante
+                            </button>
+                        </div>
+                    `;
+                    break;
+                case 3: // Paciente
+                    optionsHTML = `
+                        <div class="button-group menu-button">
+                            <button onclick="window.location.href='/CPAC'" type="button">
+                                Gestión de citas paciente
+                            </button>
+                        </div>
+                    `;
+                    break;
+            }
+
+            rolSpecificOptions.innerHTML = optionsHTML;
+        }
+
+        function logout() {
+            sessionStorage.clear();
+            window.location.href = '/';
+        }
+
+        // Prevenir acceso directo sin sesión
+        if (!sessionStorage.getItem('userData')) {
+            window.location.href = '/';
+        }
+    </script>
+</body>
+</html>

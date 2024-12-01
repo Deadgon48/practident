@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --danger-color: #e74c3c;
+            --background-color: #f5f5f5;
+            --text-color: #2c3e50;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--background-color);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 500px;
+            width: 100%;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+        }
+
+        .brand {
+            color: var(--primary-color);
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .divider {
+            height: 2px;
+            background: linear-gradient(to right, var(--primary-color), #2980b9);
+            margin: 15px 0;
+            border-radius: 2px;
+        }
+
+        .warning-message {
+            background-color: #fff5f5;
+            border: 2px solid var(--danger-color);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .warning-message h3 {
+            color: var(--danger-color);
+            margin-top: 0;
+        }
+
+        .warning-message ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+
+        .warning-message li {
+            margin-bottom: 8px;
+            color: #4a5568;
+        }
+
+        .button-group {
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .button-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        .button-danger:hover {
+            background-color: #c0392b;
+        }
+
+        .button-secondary {
+            background-color: #95a5a6;
+            color: white;
+        }
+
+        .button-secondary:hover {
+            background-color: #7f8c8d;
+        }
+
+        .loading {
+            position: relative;
+            pointer-events: none;
+        }
+
+        .loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            top: 50%;
+            left: 50%;
+            margin: -10px 0 0 -10px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            color: var(--danger-color);
+            background-color: #fff5f5;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .confirmation-dialog {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.5);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .confirmation-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="logo">PD</div>
+        <div class="brand">PracticDent</div>
+        <div class="divider"></div>
+        <h1>Eliminar Perfil</h1>
+
+        <div class="warning-message">
+            <h3><i class="fas fa-exclamation-triangle"></i> Advertencia</h3>
+            <p>Esta acción eliminará permanentemente su cuenta y toda la información asociada:</p>
+            <ul>
+                <li>Información personal</li>
+                <li>Historial de citas</li>
+                <li>Prácticas asignadas</li>
+                <li>Calificaciones y retroalimentación</li>
+                <li>Materias registradas</li>
+            </ul>
+            <p>Esta acción no se puede deshacer.</p>
+        </div>
+
+        <div id="errorMessage" class="error-message"></div>
+
+        <div class="button-group">
+            <button onclick="confirmarEliminacion()" class="button button-danger">
+                <i class="fas fa-trash-alt"></i> Eliminar mi cuenta
+            </button>
+            <button onclick="window.location.href='/P'" class="button button-secondary">
+                <i class="fas fa-arrow-left"></i> Volver al Perfil
+            </button>
+        </div>
+    </div>
+
+    <div id="confirmationDialog" class="confirmation-dialog">
+        <div class="confirmation-content">
+            <h2>Confirmar Eliminación</h2>
+            <p>¿Está seguro que desea eliminar su cuenta? Esta acción no se puede deshacer.</p>
+            <div class="button-group">
+                <button onclick="eliminarCuenta()" class="button button-danger">
+                    Sí, eliminar mi cuenta
+                </button>
+                <button onclick="cancelarEliminacion()" class="button button-secondary">
+                    No, mantener mi cuenta
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Verificar sesión al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            const userData = sessionStorage.getItem('userData');
+            if (!userData) {
+                window.location.href = '/';
+                return;
+            }
+        });
+
+        function confirmarEliminacion() {
+            document.getElementById('confirmationDialog').style.display = 'flex';
+        }
+
+        function cancelarEliminacion() {
+            document.getElementById('confirmationDialog').style.display = 'none';
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        async function eliminarCuenta() {
+            try {
+                const userData = JSON.parse(sessionStorage.getItem('userData'));
+                if (!userData) {
+                    throw new Error('No se encontró información de usuario');
+                }
+
+                const response = await fetch('/deleteProfile', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        userId: userData.id,
+                        rolId: userData.rol_id
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    sessionStorage.clear();
+                    window.location.href = '/';
+                } else {
+                    throw new Error(data.message || 'Error al eliminar la cuenta');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showError(error.message || 'Error al procesar la solicitud');
+                document.getElementById('confirmationDialog').style.display = 'none';
+            }
+        }
+
+        // Cerrar diálogo al hacer clic fuera
+        window.onclick = function(event) {
+            const dialog = document.getElementById('confirmationDialog');
+            if (event.target === dialog) {
+                dialog.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

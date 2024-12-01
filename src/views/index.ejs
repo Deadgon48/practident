@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --primary-dark: #2980b9;
+            --error-color: #e74c3c;
+            --success-color: #2ecc71;
+            --background-color: #f5f5f5;
+            --text-color: #2c3e50;
+            --border-color: #ddd;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--background-color);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 400px;
+            width: 100%;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .brand {
+            color: var(--primary-color);
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .divider {
+            height: 2px;
+            background: linear-gradient(to right, var(--primary-color), var(--primary-dark));
+            margin: 15px 0;
+            border-radius: 2px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-color);
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+            background-color: white;
+        }
+
+        .form-group input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+            box-shadow: none;
+        }
+
+        .form-group.error input {
+            border-color: var(--error-color);
+        }
+
+        .error-message {
+            color: var(--error-color);
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+            padding: 8px;
+            background-color: rgba(231, 76, 60, 0.1);
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .button-group {
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+            color: white;
+        }
+
+        .button-primary {
+            background-color: var(--primary-color);
+        }
+
+        .button-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .button-secondary {
+            background-color: #95a5a6;
+        }
+
+        .button-secondary:hover {
+            background-color: #7f8c8d;
+            transform: translateY(-1px);
+        }
+
+        .loading {
+            position: relative;
+            pointer-events: none;
+        }
+
+        .loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            top: 50%;
+            left: 50%;
+            margin: -10px 0 0 -10px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 42px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .session-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 15px;
+            padding: 10px;
+            background-color: rgba(52, 152, 219, 0.1);
+            border-radius: 6px;
+            font-size: 14px;
+            color: var(--primary-color);
+            justify-content: center;
+        }
+
+        .session-info i {
+            font-size: 16px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">PD</div>
+            <div class="brand">PracticDent</div>
+            <div class="divider"></div>
+            <h1><%= title %></h1>
+        </div>
+
+        <div id="mainError" class="error-message"></div>
+
+        <form id="loginForm" method="POST">
+            <div class="form-group">
+                <label for="usuario">Usuario:</label>
+                <input 
+                    type="text" 
+                    id="usuario" 
+                    name="usuario" 
+                    placeholder="Ingrese su usuario"
+                    autocomplete="username"
+                    required
+                />
+                <div class="error-message"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="contrasena">Contraseña:</label>
+                <input 
+                    type="password" 
+                    id="contrasena" 
+                    name="contrasena" 
+                    placeholder="Ingrese su contraseña"
+                    autocomplete="current-password"
+                    required
+                />
+                <i class="fas fa-eye password-toggle" onclick="togglePassword()"></i>
+                <div class="error-message"></div>
+            </div>
+
+            <div class="button-group">
+                <button type="submit" id="submitBtn" class="button button-primary">
+                    <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                </button>
+                <button type="button" onclick="window.location.href='/R'" class="button button-secondary">
+                    <i class="fas fa-user-plus"></i> Registrarse
+                </button>
+            </div>
+        </form>
+
+        <div id="browserInfo" class="session-info">
+            <i class="fas fa-shield-alt"></i>
+            <span>Sesión segura en este navegador</span>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Evitar múltiples inicializaciones
+            if (window.loginInitialized) return;
+            window.loginInitialized = true;
+    
+            // Verificar sesión activa
+            const userData = sessionStorage.getItem('userData');
+            if (userData) {
+                window.location.href = '/P';
+                return;
+            }
+    
+            const form = document.getElementById('loginForm');
+            const submitBtn = document.getElementById('submitBtn');
+    
+            // Event listener del formulario
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                // Reset errors
+                document.querySelectorAll('.error-message').forEach(el => el.style.display = 'none');
+                document.querySelectorAll('.form-group').forEach(el => el.classList.remove('error'));
+                
+                const usuario = document.getElementById('usuario').value.trim();
+                const contrasena = document.getElementById('contrasena').value;
+    
+                // Validaciones básicas
+                let isValid = true;
+                
+                if (!usuario) {
+                    showFieldError('usuario', 'El usuario es requerido');
+                    isValid = false;
+                }
+    
+                if (!contrasena) {
+                    showFieldError('contrasena', 'La contraseña es requerida');
+                    isValid = false;
+                }
+    
+                if (!isValid) return;
+    
+                // Iniciar animación de carga
+                submitBtn.classList.add('loading');
+                submitBtn.disabled = true;
+    
+                try {
+        const response = await fetch('/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ usuario, contrasena })
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (data.success) {
+            sessionStorage.setItem('userData', JSON.stringify(data.user));
+            window.location.replace('/P');
+        } else {
+            showMainError(data.message || 'Error en el inicio de sesión');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        showMainError('Error al intentar iniciar sesión');
+        submitBtn.disabled = false;
+        submitBtn.classList.remove('loading');
+    }
+            });
+    
+            // Event listeners para inputs
+            document.querySelectorAll('input').forEach(input => {
+                input.addEventListener('input', function() {
+                    const formGroup = this.closest('.form-group');
+                    formGroup.classList.remove('error');
+                    formGroup.querySelector('.error-message').style.display = 'none';
+                    document.getElementById('mainError').style.display = 'none';
+                });
+            });
+    
+            // Toggle de contraseña
+            const toggleIcon = document.querySelector('.password-toggle');
+            if (toggleIcon) {
+                toggleIcon.addEventListener('click', function() {
+                    const passwordInput = document.getElementById('contrasena');
+                    if (passwordInput.type === 'password') {
+                        passwordInput.type = 'text';
+                        this.classList.remove('fa-eye');
+                        this.classList.add('fa-eye-slash');
+                    } else {
+                        passwordInput.type = 'password';
+                        this.classList.remove('fa-eye-slash');
+                        this.classList.add('fa-eye');
+                    }
+                });
+            }
+        });
+    
+        // Funciones de utilidad
+        function showFieldError(fieldId, message) {
+            const field = document.getElementById(fieldId);
+            const formGroup = field.closest('.form-group');
+            const errorDiv = formGroup.querySelector('.error-message');
+            
+            formGroup.classList.add('error');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+    
+        function showMainError(message) {
+            const mainError = document.getElementById('mainError');
+            mainError.textContent = message;
+            mainError.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
